@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NoBlueScreen{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            flex: 1;
+        }
+
+        .search-bar {
+            flex: 2;
+        }
+
+        .weather-widget {
+            flex: 1;
+            text-align: right;
+        }
+
+        .user-actions {
+            flex: 2;
+            text-align: right;
+        }
+
+        .user-actions a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .dropdowns {
+            background-color: #444;
+            padding: 10px;
+            text-align: right;
+        }
+
+        .dropdowns a {
+            color: #fff;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar {
+            flex: 1;
+            background-color: #fff;
+            padding: 10px;
+            margin-right: 20px;
+        }
+
+        .content {
+            flex: 3;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        .features {
+            flex: 1;
+            background-color: #fff;
+            padding: 10px;
+            margin-left: 20px;
+        }
+
+        .slideshow {
+            background-color: #ddd;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .external-links {
+            margin-top: 20px;
+            background-color: #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .external-links a {
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .additional-text {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>NoBlueScreen</h1>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Search..." />
+        </div>
+        <div class="weather-widget" id="weather-widget">
+            Loading weather...
+        </div>
+        <div class="user-actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a> |
+                <a href="{% url 'signup' %}">Signup</a>
+            {% endif %}
+            <a href="{% url 'cart' %}">Cart</a>
+        </div>
+    </header>
+    <div class="dropdowns">
+        <a href="#">Dropdown</a> |
+        <a href="#">Currency</a> |
+        <a href="#">Language</a> |
+        <a href="#">Dropdown2</a>
+    </div>
+    <main>
+        <div class="container">
+            <div style="display: flex;">
+                <aside class="sidebar">
+                    <ul>
+                        <li><a href="#">Section 1</a></li>
+                        <li><a href="#">Section 2</a></li>
+                        <li><a href="#">Section 3</a></li>
+                        <li><a href="#">Section 4</a></li>
+                        <li><a href="#">Section 5</a></li>
+                        <li><a href="#">Section 6</a></li>
+                        <li><a href="#">Section 7</a></li>
+                        <li><a href="#">Section 8</a></li>
+                        <li><a href="#">Section 9</a></li>
+                    </ul>
+                </aside>
+                <section class="content">
+                    <div class="slideshow">
+                        Slideshow
+                    </div>
+                </section>
+                <aside class="features">
+                    <ul>
+                        <li><a href="#">Feature 1</a></li>
+                        <li><a href="#">Feature 2</a></li>
+                        <li><a href="#">Feature 3</a></li>
+                        <li><a href="#">Feature 4</a></li>
+                        <li><a href="#">Feature 5</a></li>
+                        <li><a href="#">Feature 6</a></li>
+                    </ul>
+                </aside>
+            </div>
+            <div class="external-links">
+                <a href="#">External Link 1</a>
+                <a href="#">External Link 2</a>
+                <a href="#">External Link 3</a>
+                <a href="#">External Link 4</a>
+            </div>
+            <div class="additional-text">
+                Some text
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2023 NoBlueScreen. All rights reserved.</p>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const apiKey = 'YOUR_API_KEY';  // Replace with your OpenWeatherMap API key
+            const city = 'London';  // Replace with your city
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const weatherWidget = document.getElementById('weather-widget');
+                    const temperature = data.main.temp;
+                    const description = data.weather[0].description;
+                    const icon = `http://openweathermap.org/img/wn/${data.weather[0].icon}.png`;
+                    weatherWidget.innerHTML = `<img src="${icon}" alt="${description}"> ${temperature}°C, ${description}`;
+                })
+                .catch(error => {
+                    const weatherWidget = document.getElementById('weather-widget');
+                    weatherWidget.innerHTML = `Failed to load weather data`;
+                    console.error('Error fetching weather data:', error);
+                });
+        });
+    </script>
+</body>
+</html>
